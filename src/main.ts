@@ -16,8 +16,9 @@ const app = createApp(App)
 
 app.use(createPinia())
 app.use(router)
+
 app.provide<DatabaseInterface>(`database`, database);
-app.provide<GameRepository>(`gamesRepository`, gameRepository);
+app.provide<GameRepository>(`gameRepository`, gameRepository);
 app.provide<UserRepository>(`userRepository`, userRepository);
 
 app.mount('#app')

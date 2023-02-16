@@ -12,93 +12,51 @@
             <progress-bar v-if="progress !== null" :result="progress.result" class="mt-5">
                 {{ progress.taskTitle }}
             </progress-bar>
-            
-            <div class="logs-container mt-5" ref="logsContainer">
-                <alert-view v-for="(record, key) in logs" :key="key" :type="record.type" class="mt-5">
-                    {{ record.text }}
-                </alert-view>
-            </div>
+
+            <logger-component ref="loggerComponent" />
         </div>
     </div>
 </template>
 
 <script lang="ts" setup="">
 import { inject, onMounted, ref } from "@vue/runtime-core";
-import AlertView from "@/views/AlertView.vue";
 import ProgressBar from "@/views/ProgressBar.vue";
 import {wait} from "@/utils";
 import type { Game } from "@/types/Game";
 import type { User } from "@/types/User";
 import type GameRepository from "@/repositories/GameRepository";
 import type UserRepository from "@/repositories/UserRepository";
+import LoggerComponent from "./LoggerComponent.vue";
+import type LoggerInterface from "./LoggerComponent";
 
-enum LogType {
-    SUCCESS = `success`,
-    INFO = `info`,
-    WARNING = `warning`,
-    DANGER = `danger`,
-    DEBUG = `debug`,
-}
-
-type RecordLog = {
-    text: string,
-    type: LogType
-}
 type ProgressType = {
     taskTitle: string,
     result: number
 }
 
 const fileInput = ref<HTMLInputElement>();
-const logs = ref<RecordLog[]>([]);
-const logsContainer = ref<HTMLDivElement>();
 const progress = ref<ProgressType | null>(null);
 const gameRepository = inject(`gameRepository`) as GameRepository;
 const userRepository = inject(`userRepository`) as UserRepository;
-
-const log = (type: LogType, text: string, ...otherParams: any[]): void => {
-    logs.value.push({ type, text });
-
-    switch (type) {
-        case LogType.SUCCESS:
-        case LogType.INFO:
-            console.info(text, ...otherParams);
-            break;
-        case LogType.WARNING:
-            console.warn(text, ...otherParams);
-            break;
-        case LogType.DANGER:
-            console.error(text, ...otherParams);
-            break;
-        default:
-            console.debug(text, ...otherParams);
-    }
-    
-    wait(0).then(() => {
-        if (logsContainer.value === undefined) {
-            return;
-        }
-
-        logsContainer.value.scrollTop = logsContainer.value.scrollHeight;
-    });
-};
+const loggerComponent = ref<LoggerInterface>();
+const logger = (): LoggerInterface => loggerComponent.value as LoggerInterface;
 
 const extractGames = async (file: File): Promise<Game[]> => {
     const content = await file.text();
 
-    log(LogType.INFO, `parsing file content`);
+    logger().info(`parsing file content`);
 
     let games: Game[];
 
     try {
         games = JSON.parse(content);
     } catch(error) {
-        log(LogType.WARNING, `Failed to parse content (invalid json)`);
+        logger().warn(`Failed to parse content (invalid json)`);
         return [];
     }
 
     if (!(games instanceof Array)) {
-        log(LogType.WARNING, `invalid json structure`);
+        logger().warn(`invalid json structure`);
         return [];
     }
 
@@ -115,7 +73,7 @@ const saveGames = async (games: Game[]): Promise<number> => {
     const filteredGames = games.filter(game => !persistentGamesIds.includes(game.id));
 
     await wait(0.15);
-    log(LogType.INFO, `filtered ${games.length - filteredGames.length} games`);
+    logger().info(`filtered ${games.length - filteredGames.length} games`);
 
     games = filteredGames;
 
@@ -123,7 +81,7 @@ const saveGames = async (games: Game[]): Promise<number> => {
         return 0;
     }
 
-    log(LogType.INFO, `saving ${games.length} games`);
+    logger().info(`saving ${games.length} games`);
 
     await gameRepository.save(games);
     await wait(0.3);
@@ -154,7 +112,7 @@ const extractAndSaveUniqueUsers = async (games: Game[], progress: ProgressType):
         return 0;
     }
 
-    log(LogType.INFO, `saving ${users.length} users`);
+    logger().info(`saving ${users.length} users`);
 
     await userRepository.save(users);
     await wait(0.3);
@@ -163,7 +121,7 @@ const extractAndSaveUniqueUsers = async (games: Game[], progress: ProgressType):
 };
 
 const handleFile = async (file: File): Promise<void> => {
-    log(LogType.INFO, `starting to process file ${file.name}`);
+    logger().info(`starting to process file ${file.name}`);
 
     progress.value = {
         taskTitle: `Processing file ${file.name}`,
@@ -175,29 +133,28 @@ const handleFile = async (file: File): Promise<void> => {
         const games = await extractGames(file);
 
         if (games.length < 1) {
-            log(LogType.WARNING, `skipping process ${file.name} (no games in file)`);
+            logger().warn(`skipping process ${file.name} (no games in file)`);
             return;
         }
 
         const savedGamesQty = await saveGames(games);
 
         if (savedGamesQty < 1) {
-            log(LogType.WARNING, `skipping ${file.name} (no games to save)`);
+            logger().warn(`skipping ${file.name} (no games to save)`);
             return;
         }
 
-        log(LogType.SUCCESS, `successfully saved ${savedGamesQty} new games`);
+        logger().success(`successfully saved ${savedGamesQty} new games`);
 
         const savedUsersQty = await extractAndSaveUniqueUsers(games, progress.value);
 
         if (savedUsersQty> 0) {
-            log(LogType.SUCCESS, `successfully saved ${savedUsersQty} new users`);
+            logger().success(`successfully saved ${savedUsersQty} new users`);
         }
-
     } catch (error) {
-        log(LogType.DANGER, `unexpected error was occurred`, error);
+        logger().error(`unexpected error was occurred`, error);
     } finally {
-        log(LogType.INFO, `finished process ${file.name}`);
+        logger().info(`finished process ${file.name}`);
         progress.value = null;
     }
 };
@@ -212,7 +169,7 @@ onMounted(() => {
         const files = fileInput.value?.files ?? null;
         
         if (files === null) {
-            log(LogType.DEBUG, `no files in input element`);
+            logger().debug(`no files in input element`);
             return;
         }
 
