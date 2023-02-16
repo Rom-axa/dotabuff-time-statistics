@@ -1,8 +1,15 @@
 <template>
     <div>
+        <div>
+            FILTERS
+        </div>
+
         <table>
             <tbody>
                 <tr>
+                    <td>
+                        hours
+                    </td>
                     <td>
                         
                     </td>

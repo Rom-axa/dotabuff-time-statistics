@@ -6,8 +6,7 @@ export default abstract class AbstractRepository<T = object> {
     ) {
     }
 
-    public async save(entity: T | T[]): Promise<void>
-    {
+    public async save(entity: T | T[]): Promise<void> {
         entity instanceof Array
             ? await (this.storage.insertBatch(entity))
             : await (this.storage.insert(entity));
