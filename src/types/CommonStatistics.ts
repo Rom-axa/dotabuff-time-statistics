@@ -1,14 +1,16 @@
-export type GameTypes<T> = {
+import type { DateTime } from "luxon";
+
+export type GameTypes<T, D = T> = {
     solo: T,
     party: T,
-    all: T,
+    all: D,
 };
 
-export type GameModes<T> = {
+export type GameModes<T, D = T> = {
     rating: T,
     allPick: T,
     other: T,
-    all: T,
+    all: D,
 };
 
 export type QtyWithPercent<T = number> = {
@@ -22,84 +24,127 @@ export type Time = {
     hours: number,  
 };
 
+export type CommonTimeStatistics = GameModes<GameTypes<QtyWithPercent<Time>>, GameTypes<QtyWithPercent<Time>, Time>>;
+export type CommonQtyStatistics = GameModes<GameTypes<QtyWithPercent>, GameTypes<QtyWithPercent, number>>;
+export type CommonQtyStatisticsWithPercents = GameModes<GameTypes<QtyWithPercent>>;
+
 export type CommonStatistics = {
     approximateTimeInDota: number,
-    timeInGames: GameModes<GameTypes<QtyWithPercent<Time>>>,
-    allGames: GameModes<GameTypes<QtyWithPercent>>,
-    wonGames: GameModes<GameTypes<QtyWithPercent>>,
-    lostGames: GameModes<GameTypes<QtyWithPercent>>,
-    abandonedGames: GameModes<GameTypes<QtyWithPercent>>,
-    trueSightedGames: GameModes<GameTypes<QtyWithPercent>>,
+    timeInGames: CommonTimeStatistics,
+    allGames: CommonQtyStatistics,
+    wonGames: CommonQtyStatisticsWithPercents,
+    lostGames: CommonQtyStatisticsWithPercents,
+    abandonedGames: CommonQtyStatisticsWithPercents,
+    trueSightedGames: CommonQtyStatisticsWithPercents,
 }
 
-const makeEmptyGameTypesObject = <T>(value: T): GameTypes<T> => ({
-    solo: value,
-    party: value,
-    all: value,
+const makeEmptyGameTypesObject = <T, D>(getValue: () => T, getValueForAll: null | (() => D | null) = null): GameTypes<T, D> => ({
+    solo: getValue(),
+    party: getValue(),
+    all: (getValueForAll ?? getValue)() as D,
 });
 
-const makeEmptyGameModesObject = <T>(value: T): GameModes<T> => ({
-    rating: value,
-    allPick: value,
-    other: value,
-    all: value,
+const makeEmptyGameModesObject = <T, D>(getValue: () => T, getValueForAll: null | (() => D | null) = null): GameModes<T, D> => ({
+    rating: getValue(),
+    allPick: getValue(),
+    other: getValue(),
+    all: (getValueForAll ?? getValue)() as D,
 });
 
-const makeEmptyQtyWithPercentObject = <T>(value: T): QtyWithPercent<T> => ({
-    value,
+const makeEmptyQtyWithPercentObject = <T>(getValue: () => T): QtyWithPercent<T> => ({
+    value: getValue(),
     percent: 0,
 });
 
 const makeEmptyTimeObject = (): Time => ({
     seconds: 0,
     get minutes(): number {
-        return this.seconds * 60;
+        return Math.floor(this.seconds / 60);
     },
     get hours(): number {
-        return this.minutes * 60;
+        return Math.floor(this.minutes / 60);
     },
     set minutes(value){},
     set hours(value){},
 });
 
-export const makeEmptyCommonStatisticsObject = (): CommonStatistics => ({
+export const isTimeObject = (object: any): object is Time => (
+    object instanceof Object &&
+    `seconds` in object &&
+    typeof object.seconds === `number`
+);
+
+export const isCommonTimeStatistics = (object: any): object is CommonTimeStatistics => (
+    object instanceof Object &&
+    object?.all?.all !== undefined &&
+    isTimeObject(object.all.all)
+);
+
+export const isCommonQtyStatistics = (object: any): object is CommonQtyStatistics => (
+    object instanceof Object &&
+    object?.all?.all !== undefined &&
+    typeof object.all.all === `number`
+);
+
+export const makeEmptyCommonStatisticsObject = (): CommonStatistics => JSON.parse(JSON.stringify({
     approximateTimeInDota: 0,
     timeInGames: makeEmptyGameModesObject(
-        makeEmptyGameTypesObject(
-            makeEmptyQtyWithPercentObject(
-                makeEmptyTimeObject()
+        () => makeEmptyGameTypesObject(
+            () => makeEmptyQtyWithPercentObject(
+                () => makeEmptyTimeObject()
             )
+        ),
+        () => makeEmptyGameTypesObject(
+            () => makeEmptyQtyWithPercentObject(
+                () => makeEmptyTimeObject()
+            ),
+            () => makeEmptyTimeObject(),
         )
     ),
     allGames: makeEmptyGameModesObject(
-        makeEmptyGameTypesObject(
-            makeEmptyQtyWithPercentObject(0)
-        )
+        () => makeEmptyGameTypesObject(
+            () => makeEmptyQtyWithPercentObject(() => 0)
+        ),
+        () => makeEmptyGameTypesObject(
+            () => makeEmptyQtyWithPercentObject(() => 0),
+            () => 0
+        ),
     ),
     wonGames: makeEmptyGameModesObject(
-        makeEmptyGameTypesObject(
-            makeEmptyQtyWithPercentObject(0)
+        () => makeEmptyGameTypesObject(
+            () => makeEmptyQtyWithPercentObject(() => 0)
         )
     ),
     lostGames: makeEmptyGameModesObject(
-        makeEmptyGameTypesObject(
-            makeEmptyQtyWithPercentObject(0)
+        () => makeEmptyGameTypesObject(
+            () => makeEmptyQtyWithPercentObject(() => 0)
         )
     ),
     abandonedGames: makeEmptyGameModesObject(
-        makeEmptyGameTypesObject(
-            makeEmptyQtyWithPercentObject(0)
+        () => makeEmptyGameTypesObject(
+            () => makeEmptyQtyWithPercentObject(() => 0)
         )
     ),
     trueSightedGames: makeEmptyGameModesObject(
-        makeEmptyGameTypesObject(
-            makeEmptyQtyWithPercentObject(0)
+        () => makeEmptyGameTypesObject(
+            () => makeEmptyQtyWithPercentObject(() => 0)
         )
     ),
-});
+}));
 
-/* REAL TYPE =)
-export type CommonStatistics = 
+export type Filters = {
+    fromDate: DateTime | null,
+    toDate: DateTime | null,
+}
+
+export const makeEmptyFilters = (): Filters => ({
+    fromDate: null,
+    toDate: null,
+})
+
+
+/* REAL TYPE =) */
+export type CommonStatistics2 = {
     approximateTimeInDota: number,
     timeInGames: {
         rating: {
@@ -198,12 +243,9 @@ export type CommonStatistics =
                 percent: number,
             },
             all: {
-                value: {
-                    seconds: number,
-                    minutes: number,
-                    hours: number,  
-                },
-                percent: number,
+                seconds: number,
+                minutes: number,
+                hours: number,  
             },
         },
     },
@@ -259,10 +301,7 @@ export type CommonStatistics =
                 value: number,
                 percent: number,
             },
-            all: {
-                value: number,
-                percent: number,
-            },
+            all: number,
         },
     },
     wonGames: {
@@ -317,10 +356,7 @@ export type CommonStatistics =
                 value: number,
                 percent: number,
             },
-            all: {
-                value: number,
-                percent: number,
-            },
+            all: number,
         },
     },
     lostGames: {
@@ -375,10 +411,7 @@ export type CommonStatistics =
                 value: number,
                 percent: number,
             },
-            all: {
-                value: number,
-                percent: number,
-            },
+            all: number,
         },
     },
     abandonedGames: {
@@ -433,10 +466,7 @@ export type CommonStatistics =
                 value: number,
                 percent: number,
             },
-            all: {
-                value: number,
-                percent: number,
-            },
+            all: number,
         },
     },
     trueSightedGames: {
@@ -491,11 +521,8 @@ export type CommonStatistics =
                 value: number,
                 percent: number,
             },
-            all: {
-                value: number,
-                percent: number,
-            },
+            all: number,
         },
     },
 }
-*/
+/* */

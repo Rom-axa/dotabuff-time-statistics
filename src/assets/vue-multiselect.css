@@ -1,0 +1,43 @@
+.multiselect .multiselect__clear {
+    position: absolute;
+    top: 12px;
+    right: 41px;
+    height: 20px;
+    width: 20px;
+    display: block;
+    cursor: pointer;
+    z-index: 2;
+}
+
+.multiselect .multiselect__clear:after, .multiselect .multiselect__clear:before {
+    content: "";
+    display: block;
+    position: absolute;
+    width: 3px;
+    height: 16px;
+    background: var(--secondary);
+    right: 7px;
+}
+
+.multiselect .multiselect__clear:hover.multiselect__clear:after, .multiselect .multiselect__clear:hover.multiselect__clear:before {
+    background: var(--dark);
+}
+
+.multiselect .multiselect__clear:before {
+    transform: rotate(45deg);
+}
+
+.multiselect .multiselect__clear:after {
+    transform: rotate(-45deg);
+}
+
+.multiselect.multiselect--hide-selected .multiselect__option--selected {
+    display: none;
+}
+
+.multiselect .multiselect__option--highlight, .multiselect .multiselect__tag, .multiselect .multiselect__option--highlight::after {
+    background-color: var(--success);
+}
+.multiselect > .multiselect__content-wrapper > .multiselect__content {
+    display: block!important;
+}

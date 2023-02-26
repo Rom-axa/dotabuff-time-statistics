@@ -1,6 +1,9 @@
+@import "@fontsource/roboto";
+
 html, body {
     padding: 0;
     margin: 0;
+    font-family: "Roboto";
 }
 
 :root {
@@ -11,7 +14,10 @@ html, body {
     --light-danger: #ffeaea;
     --danger: #8d0909;
     --light-success: #eafff5;
-    --success: #098d0e;
+    --success: #098d4f;
+    --secondary: #959595;
+    --light-secondary: #e2e2e2;
+    --dark: #434343;
 }
 
 .mt-5 {

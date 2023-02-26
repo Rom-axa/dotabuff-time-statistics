@@ -1,0 +1,11 @@
+.dp__theme_light {
+    --dp-success-color: var(--success);
+    --dp-primary-color: var(--info);
+    --dp-danger-color: var(--danger);
+    --dp-icon-color: var(--secondary);
+    --dp-scroll-bar-color: var(--secondary);
+    --dp-disabled-color-text: var(--secondary);
+    --dp-secondary-color: var(--secondary);
+    --dp-hover-color: var(--light-secondary);
+    --dp-marker-color: var(--danger);
+}

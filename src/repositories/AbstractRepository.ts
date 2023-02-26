@@ -11,4 +11,8 @@ export default abstract class AbstractRepository<T = object> {
             ? await (this.storage.insertBatch(entity))
             : await (this.storage.insert(entity));
     }
+
+    public async findAll(): Promise<ReadonlyArray<T>> {
+        return (await this.storage.get()).items;
+    }
 }
