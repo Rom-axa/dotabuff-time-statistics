@@ -1,32 +1,32 @@
 <template>
-    <form action="" @submit.prevent="submit" class="filters-container">
+    <form action="" @submit.prevent="$emit(`submit`)" class="filters-container">
         <div class="filters-panel">
             <div class="filters-row">
-                <date-range-picker v-model:from-date="tempState.fromDate" v-model:to-date="tempState.toDate" />
+                <date-range-picker v-model:from-date="model.fromDate" v-model:to-date="model.toDate" />
 
                 <div class="filters-cell">
                     <label>
-                        <input type="checkbox" v-model="tempState.isRating">
+                        <input type="checkbox" v-model="model.isRating">
                         rating
                     </label>
                 </div>
 
                 <div class="filters-cell">
-                    <game-players-qty-radio v-model="tempState.gamePlayersQty" />
+                    <game-players-qty-radio v-model="model.gamePlayersQty" />
                 </div>
             </div>
 
             <div class="filters-row">
                 <div class="filters-select-container">
-                    <users-accounts-select v-model="tempState.selectedUsers" :users="users" />
+                    <users-accounts-select v-model="model.selectedUsers" :users="users" />
                 </div>
                 
                 <div class="filters-select-container">
-                    <game-mode-select v-model="tempState.gamesModes" />
+                    <game-mode-select v-model="model.gamesModes" />
                 </div>
 
                 <div class="filters-select-container">
-                    <heroes-select v-model="tempState.selectedHeroes" :heroes="heroes" />
+                    <heroes-select v-model="model.selectedHeroes" :heroes="heroes" />
                 </div>
             </div>
         </div>
@@ -34,11 +34,11 @@
         <div class="filters-separator"></div>
 
         <div class="filters-control-panel">
-            <button class="filters-button filters-button-search" @click="submit">
+            <button type="submit" class="filters-button filters-button-search">
                 Search
             </button>
 
-            <button class="filters-button filters-button-reset" @click="reset">
+            <button type="button" class="filters-button filters-button-reset" @click="$emit(`reset`)">
                 Reset
             </button>
         </div>
@@ -48,27 +48,22 @@
 
 <script lang="ts" setup>
 // TODO remember in http query on submit
-import UsersAccountsSelect from './statistics/UsersAccountsSelect.vue';
-import GamePlayersQtyRadio from './statistics/GamePlayersQtyRadio.vue';
-import DateRangePicker from './statistics/DateRangePicker.vue';
-import HeroesSelect from './statistics/HeroesSelect.vue';
-import GameModeSelect from './statistics/GameModeSelect.vue';
-import type { DateTime } from 'luxon';
-import { reactive, type PropType } from 'vue';
+import type { PropType } from 'vue';
 import type { User } from '@/types/User';
-import type { GameModes } from '@/types/statistics/Filters';
+import type { Filters } from '@/types/statistics/Filters';
+import UsersAccountsSelect from './UsersAccountsSelect.vue';
+import GamePlayersQtyRadio from './GamePlayersQtyRadio.vue';
+import DateRangePicker from './DateRangePicker.vue';
+import HeroesSelect from './HeroesSelect.vue';
+import GameModeSelect from './GameModeSelect.vue';
 
-type TempState = {
-    fromDate: DateTime | null,
-    toDate: DateTime | null,
-    isRating: boolean,
-    selectedUsers: User[],
-    gamesModes: GameModes[],
-    gamePlayersQty: number,
-    selectedHeroes: string[],
-}
+defineEmits([`submit`, `reset`]);
 
-defineProps({
+const props = defineProps({
+    modelValue: {
+        required: true,
+        type: Object as PropType<Filters>,
+    },
     users: {
         required: true,
         type: Array as PropType<User[]>,
@@ -87,23 +82,14 @@ defineProps({
         type: Boolean,
         default: false,
     },
-});
-const emit = defineEmits([`submit`]);
-
-const makeEmptyForm = (): TempState => ({
-    fromDate: null,
-    toDate: null,
-    isRating: false,
-    selectedUsers: [],
-    gamesModes: [],
-    gamePlayersQty: 0,
-    selectedHeroes: [],
+    disabled: {
+        required: false,
+        type: Boolean,
+        default: false,
+    }
 });
 
-const tempState = reactive<TempState>(makeEmptyForm());
-
-const submit = () => emit(`submit`, {...tempState});
-const reset = () => Object.assign(tempState, makeEmptyForm());
+const model = props.modelValue;
 </script>
 
 <style scoped>
@@ -132,20 +118,6 @@ const reset = () => Object.assign(tempState, makeEmptyForm());
     display: flex;
     align-items: center;
 }
-
-/* .datepickers-container {
-    display: flex;
-}
-.datepicker-part-container {
-    width: 320px;
-    display: flex;
-}
-.datepicker-part-container > .filters-picker {
-    width: 200px;
-}
-.datepicker-part-container > .datepicker-switcher {
-    margin-right: 15px;
-} */
 
 .filters-container > .filters-separator {
     border-right: 1px solid var(--secondary);

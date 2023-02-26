@@ -9,7 +9,7 @@ export const useUsersStore = defineStore(`users`, () => {
     const list = ref<User[]>([]);
     const fetching = ref<boolean>(false);
 
-    const fetchUsers = async () => {
+    const fetch = async () => {
         try {
             fetching.value = true;
 
@@ -19,5 +19,5 @@ export const useUsersStore = defineStore(`users`, () => {
         }
     };
 
-    return { list, fetching, fetchUsers }
+    return { list, fetching, fetch }
 });

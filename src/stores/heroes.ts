@@ -8,7 +8,7 @@ export const useHeroesStore = defineStore(`heroes`, () => {
     const list = ref<string[]>([]);
     const fetching = ref<boolean>(false);
 
-    const fetchHeroes = async () => {
+    const fetch = async () => {
         try {
             fetching.value = true;
 
@@ -18,5 +18,5 @@ export const useHeroesStore = defineStore(`heroes`, () => {
         }
     }; 
 
-    return { list, fetching, fetchHeroes }
+    return { list, fetching, fetch }
 });
