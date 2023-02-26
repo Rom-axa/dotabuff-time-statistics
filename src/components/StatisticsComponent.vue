@@ -10,6 +10,11 @@
             @submit="handleSubmit"
             @reset="state.filters.reset()" />
         
+        <div class="mt-50">
+            <template v-for="(report, index) in state.reports" :key="index">
+                <statistics-report :report="report" />
+            </template>
+        </div>
         
     </div>
 </template>
@@ -18,6 +23,7 @@
 import FiltersComponent from './statistics/FiltersForm.vue';
 import { useStatisticsStore } from '@/stores/statistics/statistics';
 import { onMounted } from 'vue';
+import StatisticsReport from '@/views/statistics/StatisticsReport.vue';
 
 const state = useStatisticsStore();
 
@@ -28,17 +34,10 @@ onMounted(() => {
     ]);
 });
 
-const handleSubmit = (...a: any) => {
-    console.log(`handleSubmit!`, a);
-
-    alert();
-}
-
+const handleSubmit = () => {
+    state.search();
+};
 </script>
 
 <style scoped>
-.container {
-    margin: 0 auto;
-    width: 1300px;
-}
 </style>

@@ -9,6 +9,14 @@ export default class GameHelper {
         return game.mode === `All Pick`;
     }
 
+    public static isSingleDraft(game: Game): boolean {
+        return game.mode === `Single Draft`;
+    }
+
+    public static isTurbo(game: Game): boolean {
+        return game.mode === `Turbo`;
+    }
+
     public static isWon(game: Game): boolean {
         return game.result === `Won Match`;
     }

@@ -11,14 +11,17 @@
   },
   "dependencies": {
     "@fontsource/roboto": "^4.5.8",
+    "@highlightjs/vue-plugin": "^2.1.0",
     "@vuepic/vue-datepicker": "^4.0.1",
+    "highlight.js": "^11.7.0",
     "luxon": "^3.2.1",
     "pinia": "^2.0.28",
     "simple-wrap-indexed-db": "^0.0.9",
     "uuid": "^9.0.0",
     "vue": "^3.2.47",
     "vue-multiselect": "^3.0.0-beta.1",
-    "vue-router": "^4.1.6"
+    "vue-router": "^4.1.6",
+    "vue-sweetalert2": "^5.0.5"
   },
   "devDependencies": {
     "@types/luxon": "^3.2.0",

@@ -9,6 +9,10 @@
                 <router-link class="nav-link" to="/">
                     load
                 </router-link>
+
+                <router-link class="nav-link" to="/instruction">
+                    instruction
+                </router-link>
             </nav>
         </header>
 

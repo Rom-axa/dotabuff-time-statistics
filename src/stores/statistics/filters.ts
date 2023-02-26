@@ -17,16 +17,5 @@ export const useFiltersStore = defineStore(`filters`, () => {
 
     const reset = () => Object.assign(form, makeEmptyForm());
 
-    // const state = reactive({
-    //     form: makeEmptyForm(),
-    // });
-
-    // const count = ref(0)
-    // const doubleCount = computed(() => count.value * 2);
-
-    // function increment() {
-        // count.value++
-    // }
-
     return { form, reset };
 })

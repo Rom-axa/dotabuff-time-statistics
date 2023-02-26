@@ -1,0 +1,29 @@
+.btn {
+    background-color: white;
+    padding: 8px;
+    font-size: 16px;
+    min-width: 100px;
+    cursor: pointer;
+}
+
+.btn.btn-success {
+    border: 1px solid var(--success);
+}
+.btn.btn-success:hover {
+    background-color: var(--light-success);
+}
+.btn.btn-success:active {
+    background-color: var(--success);
+    color: white;
+}
+
+.btn.btn-secondary {
+    border: 1px solid var(--secondary);
+}
+.btn.btn-secondary:hover {
+    background-color: var(--light-secondary);
+}
+.btn.btn-secondary:active {
+    background-color: var(--secondary);
+    color: white;
+}

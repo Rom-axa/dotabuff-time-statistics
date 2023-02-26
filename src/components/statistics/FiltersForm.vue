@@ -2,7 +2,7 @@
     <form action="" @submit.prevent="$emit(`submit`)" class="filters-container">
         <div class="filters-panel">
             <div class="filters-row">
-                <date-range-picker v-model:from-date="model.fromDate" v-model:to-date="model.toDate" />
+                <date-range-picker  v-model:from-date="model.fromDate" v-model:to-date="model.toDate" />
 
                 <div class="filters-cell">
                     <label>
@@ -34,11 +34,11 @@
         <div class="filters-separator"></div>
 
         <div class="filters-control-panel">
-            <button type="submit" class="filters-button filters-button-search">
+            <button type="submit" class="btn btn-success">
                 Search
             </button>
 
-            <button type="button" class="filters-button filters-button-reset" @click="$emit(`reset`)">
+            <button type="button" class="btn btn-secondary" @click="$emit(`reset`)">
                 Reset
             </button>
         </div>
@@ -135,36 +135,4 @@ const model = props.modelValue;
     justify-content: space-around;
 }
 
-.filters-container > .filters-control-panel > .filters-button {
-    background-color: white;
-    padding: 8px;
-    font-size: 16px;
-    min-width: 100px;
-}
-.filters-container > .filters-control-panel > .filters-button:hover {
-    cursor: pointer;
-}
-.filters-container > .filters-control-panel > .filters-button:active {
-    color: white;
-}
-
-.filters-container > .filters-control-panel > .filters-button.filters-button-search {
-    border: 1px solid var(--success);
-}
-.filters-container > .filters-control-panel > .filters-button.filters-button-reset {
-    border: 1px solid var(--secondary);
-}
-.filters-container > .filters-control-panel > .filters-button.filters-button-search:hover {
-    background-color: var(--light-success);
-}
-.filters-container > .filters-control-panel > .filters-button.filters-button-search:active {
-    background-color: var(--success);
-    color: white;
-}
-.filters-container > .filters-control-panel > .filters-button.filters-button-reset:hover {
-    background-color: var(--light-secondary);
-}
-.filters-container > .filters-control-panel > .filters-button.filters-button-reset:active {
-    background-color: var(--secondary);
-}
 </style>

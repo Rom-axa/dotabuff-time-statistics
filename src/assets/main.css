@@ -1,10 +1,5 @@
 @import "@fontsource/roboto";
-
-html, body {
-    padding: 0;
-    margin: 0;
-    font-family: "Roboto";
-}
+@import "./buttons.css";
 
 :root {
     --light-info: #eaf3ff;
@@ -16,10 +11,46 @@ html, body {
     --light-success: #eafff5;
     --success: #098d4f;
     --secondary: #959595;
-    --light-secondary: #e2e2e2;
-    --dark: #434343;
+    --light-secondary: #f1f1f1;
+    --dark: #282828;
+}
+
+html, body {
+    padding: 0;
+    margin: 0;
+    font-family: "Roboto";
+}
+
+.container {
+    margin: 0 auto;
+    width: 1300px;
+}
+
+.text-center {
+    text-align: center;
+}
+.text-secondary {
+    color: var(--secondary);
+}
+.text-success {
+    color: var(--success);
+}
+.text-danger {
+    color: var(--danger);
+}
+.text-dark {
+    color: var(--dark);
 }
 
 .mt-5 {
     margin-top: 5px;
+}
+
+.mt-50 {
+    margin-top: 50px;
+}
+
+.default-link {
+    text-decoration: none;
+    color: var(--info);
 }

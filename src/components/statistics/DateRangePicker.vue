@@ -11,10 +11,10 @@
 
             <vue-date-picker
                 :model-value="tempState.fromDate.toSQL()"
-                @update:model-value="useStartDate ? null : $emit(`update:fromDate`, DateTime.fromJSDate($event))"
+                @update:model-value="useStartDate ? $emit(`update:fromDate`, DateTime.fromJSDate($event)) : null"
                 class="filters-picker"
                 format="yyyy-MM-dd"
-                :max-date="tempState.toDate.toSQL()"
+                :max-date="useEndDate ? tempState.toDate.toSQL() : undefined"
                 :clearable="false"
                 :disabled="!useStartDate" />
 
@@ -31,10 +31,10 @@
 
             <vue-date-picker
                 :model-value="tempState.toDate.toSQL()"
-                @update:model-value="useEndDate ? null : $emit(`update:toDate`, DateTime.fromJSDate($event))"
+                @update:model-value="useEndDate ? $emit(`update:toDate`, DateTime.fromJSDate($event)) : null"
                 class="filters-picker"
                 format="yyyy-MM-dd"
-                :min-date="tempState.fromDate.toSQL()"
+                :min-date="useStartDate ? tempState.fromDate.toSQL() : undefined"
                 :clearable="false"
                 :disabled="!useEndDate" />
 
